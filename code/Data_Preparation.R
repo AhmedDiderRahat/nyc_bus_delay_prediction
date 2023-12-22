@@ -12,6 +12,7 @@ rm(list = ls(all.names = TRUE))
 # add the library
 library(dplyr)
 library(ggplot2)
+library(lubridate)
 
 setwd('../ahmed/Desktop/ADR/ML-2/')
 
@@ -199,5 +200,39 @@ ggplot(clean_df, aes(y = delay_mins)) +
   labs(title = "Boxplot of Bus Delays", x = "", y = "Delay Time (Mins)")
 
 
+# calculate the weekend status
+clean_df$weekend_status <- ifelse(weekdays(as.Date(clean_df$schedule_arr_time_tt)) 
+                                  %in% c("Saturday", "Sunday"), TRUE, FALSE)
+
+print(clean_df[1:10, c("expected_arr_time_tt", "schedule_arr_time_tt", "weekend_status")])
+
+# calculate the day of the year
+clean_df$day_of_year <- yday(clean_df$schedule_arr_time_tt)
+print(clean_df[1:10, c("expected_arr_time_tt", "schedule_arr_time_tt", "day_of_year")])
+
+plot(clean_df$day_of_year, clean_df$delay_mins, 
+     main = "Scatter Plot of Delay by Day of Year",
+     xlab = "Day of Year", 
+     ylab = "Delay in Minutes",
+     pch = 19,    # Type of point. 19 is solid circle
+     col = "blue" # Color of points
+)
+
+
+# Extract hours and minutes and calculate total minutes
+clean_df$time_of_day <- as.numeric(format(clean_df$schedule_arr_time_tt, 
+                                   "%H")) * 60 + as.numeric(format(clean_df$schedule_arr_time_tt, "%M"))
+
+
+print(clean_df[1:10, c("schedule_arr_time_tt", "day_of_year", "time_of_day")])
+
+
+plot(clean_df$time_of_day, clean_df$delay_mins, 
+     main = "Scatter Plot of Delay by Time of Day",
+     xlab = "Time of Day", 
+     ylab = "Delay in (Minutes)",
+     pch = 19,    # Type of point. 19 is solid circle
+     col = "red" # Color of points
+)
 
 
