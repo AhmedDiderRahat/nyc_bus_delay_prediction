@@ -235,4 +235,26 @@ plot(clean_df$time_of_day, clean_df$delay_mins,
      col = "red" # Color of points
 )
 
+names(clean_df)
+
+# Here, is the list of columns in the dataset. We don't need the time based features as we have the derived features
+#   out of them like delay_mins, day_of_year, weekend_status, and time_of_day. We can remove the time based features.
+
+df <- subset(clean_df, select = -c(recorded_at, expected_arr_time, expected_arr_time_tt, 
+                                   schedule_arr_time, schedule_arr_time_tt))
+
+
+# set the predicted columns at the ends
+# Store the column
+delay_mins <- df$delay_mins
+
+# Remove the column from its current position
+df$delay_mins <- NULL
+
+# Append it to the end of the dataframe
+df <- cbind(df, delay_mins = delay_mins)
+
+names(df)
+
+write.csv(df, file = "projects/nyc_bus_delay_prediction/dataset/nyc_ds_eda.csv", row.names = FALSE)
 
