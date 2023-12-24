@@ -17,7 +17,7 @@ setwd('D:/Msc/Winter 23-24/ML 2/Project/nyc_bus_delay_prediction')
 
 
 # Load the dataset
-df <- read.csv("/dataset/nyc_ds_eda.csv")
+df <- read.csv("dataset/nyc_ds_eda.csv")
 
 
 ## Uni-variate Analysis
@@ -279,7 +279,7 @@ if (!is.na(first_index)) {
 ## Map Visualization of each routes from source to destination
 
 # install the package if needed
-# install.packages("maps", dep = TRUE)
+#install.packages("maps", dep = TRUE)
 
 library(maps)
 
