@@ -13,11 +13,12 @@ library(dplyr)
 library(ggplot2)
 library(lubridate)
 
-setwd('D:/Msc/Winter 23-24/ML 2/Project/nyc_bus_delay_prediction')
+#setwd('D:/Msc/Winter 23-24/ML 2/Project/nyc_bus_delay_prediction')
 
+root_rahat_dir <- "Desktop/ADR/ML-2/projects/nyc_bus_delay_prediction/"
 
 # Load the dataset
-df <- read.csv("dataset/nyc_ds_eda.csv")
+df <- read.csv(paste(root_rahat_dir, "dataset/nyc_ds_eda.csv", sep=""))
 
 
 ## Uni-variate Analysis
@@ -552,8 +553,132 @@ text(1.24, quantiles[2], labels = round(quantiles[2], 2), col = "darkgreen")
 ## There are several outlair present in the data.
 
 
-
+#---------------------------------------------------------------------------------
 
 ## Bi-variate Analysis
 
 #---------------------------------------------------------------------------------
+
+## Direction column vs delay time
+boxplot(non_neg_delay ~  direction, data = df, family='binomial')
+
+
+#---------------------------------------------------------------------------------
+
+## Line Name column vs delay time
+
+df_nnd_line <- df %>%
+  group_by(line_name) %>%
+  summarise(
+    count = n(),
+    mean_delay = mean(non_neg_delay, na.rm = TRUE)) %>% 
+  arrange(desc(mean_delay))
+
+head(df_nnd_line)
+
+# Calculate the average count
+average_count <- mean(df_nnd_line$count)
+
+# Filter out lines with count less than the average count
+df_nnd_line_aa <- df_nnd_line %>%
+  filter(count >= average_count)
+
+cat("There are a total number of ", nrow(df_nnd_line_aa), 
+    " obersvation which has frequncy above to the avg. frequency", sep = "")
+
+# Set the factor levels of line_name in the order of the dataframe
+df_nnd_line_aa$line_name <- factor(df_nnd_line_aa$line_name, levels = df_nnd_line_aa$line_name)
+
+# Identify the maximum and minimum mean_delay
+max_delay <- df_nnd_line_aa[which.max(df_nnd_line_aa$mean_delay), ]
+min_delay <- df_nnd_line_aa[which.min(df_nnd_line_aa$mean_delay), ]
+
+
+ggplot(df_nnd_line_aa, aes(x = line_name, y = mean_delay, fill = count)) +
+  geom_bar(stat = "identity") +
+  geom_text(data = max_delay, aes(label = round(mean_delay, 2), y = mean_delay + 0.5), hjust= 0.15, vjust = 1) +
+  geom_text(data = min_delay, aes(label = round(mean_delay, 2), y = mean_delay + 0.5), vjust = 1) +
+  labs(x = "Line Name", y = "Mean Delay", fill = "Count") +
+  scale_fill_gradient(low = "blue", high = "red") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+# Filter out lines with count greater than the average count
+df_nnd_line_ba <- df_nnd_line %>%
+  filter(count < average_count)
+
+cat("There are a total number of ", nrow(df_nnd_line_ba), 
+    " obersvation which has frequncy above to the avg. frequency", sep = "")
+
+# Set the factor levels of line_name in the order of the dataframe
+df_nnd_line_ba$line_name <- factor(df_nnd_line_ba$line_name, levels = df_nnd_line_ba$line_name)
+
+
+# Identify the maximum and minimum mean_delay
+max_delay <- df_nnd_line_ba[which.max(df_nnd_line_ba$mean_delay), ]
+min_delay <- df_nnd_line_ba[which.min(df_nnd_line_ba$mean_delay), ]
+
+# Assuming df_nnd_line is already created as per your description
+ggplot(df_nnd_line_ba, aes(x = line_name, y = mean_delay, fill = count)) +
+  geom_bar(stat = "identity") +
+  geom_text(data = max_delay, aes(label = round(mean_delay, 2), y = mean_delay + 1.0), hjust= 0.15, vjust = 1) +
+  geom_text(data = min_delay, aes(label = round(mean_delay, 2), y = mean_delay + 1.0), vjust = 1) +
+  labs(x = "Line Name", y = "Mean Delay", fill = "Count") +
+  scale_fill_gradient(low = "blue", high = "red") + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+# Summary Statistics: 
+## 1. Frequent bus lines have less variation in the average delay time (11.96 - 1.1).
+## 2. Where the less frequent bus that have less frequency than the average frequency 
+####  have high variation in their average delay time (43.52 - 0).
+
+#---------------------------------------------------------------------------------
+
+## Weekend column vs delay time
+boxplot(non_neg_delay ~  weekend_status, data = df, family='binomial')
+
+
+## day of the year column vs delay time
+boxplot(non_neg_delay ~  day_of_year, data = df, family='binomial')
+
+
+## time of the day column vs delay time
+
+df$hour_of_day <- floor(df$time_of_day / 60)
+
+boxplot(non_neg_delay ~  hour_of_day, data = df, family='binomial')
+
+
+boxplot(non_neg_delay ~  arrivial_app, data = df, family='binomial')
+
+
+# Final Discussion to pick the features:
+## 1. direction
+## 2. line_name
+## 3. org_name
+## 4. dest_name
+# Couldn't pick the latitude and longitude of both start and and station as we are picking their name
+## 5. vech_name
+# vehicle latitude and longitude also not necessary in our task
+# also not considering the arrival approximation related features
+## 6. weekend_status
+## 7. day_of_year
+## 8. time_of_day
+
+df$org_lat <- NULL
+df$org_long <- NULL
+df$dest_lat <- NULL
+df$dest_long <- NULL
+df$vech_lat <- NULL
+df$vech_long <- NULL
+df$next_point_name <- NULL
+df$arrivial_app <- NULL
+df$dist_from_stop <- NULL
+df$delay_mins <- NULL
+df$hour_of_day <- NULL
+
+names(df)
+
+# save the final dataset
+write.csv(df, file = paste(root_rahat_dir, "dataset/nyc_ds_ml.csv", sep=""), row.names = FALSE)
