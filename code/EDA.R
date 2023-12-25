@@ -680,5 +680,21 @@ df$hour_of_day <- NULL
 
 names(df)
 
+# train-test partition (80/20)
+
+# Set seed for reproducibility
+set.seed(123)
+
+# Calculate the size for the 80% split
+split_size <- floor(0.8 * nrow(df))
+
+# Sample rows for the first dataframe (80%)
+sampled_indices <- sample(seq_len(nrow(df)), size = split_size)
+
+# Create the two dataframes
+train_df <- df[sampled_indices, ]  # 80% of the data
+test_df <- df[-sampled_indices, ] # Remaining 20% of the data
+
 # save the final dataset
-write.csv(df, file = paste(root_rahat_dir, "dataset/nyc_ds_ml.csv", sep=""), row.names = FALSE)
+write.csv(train_df, file = paste(root_rahat_dir, "dataset/nyc_ds_train.csv", sep=""), row.names = FALSE)
+write.csv(test_df, file = paste(root_rahat_dir, "dataset/nyc_ds_test.csv", sep=""), row.names = FALSE)
