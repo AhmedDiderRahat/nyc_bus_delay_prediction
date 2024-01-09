@@ -13,12 +13,14 @@ library(dplyr)
 library(ggplot2)
 library(lubridate)
 
-#setwd('D:/Msc/Winter 23-24/ML 2/Project/nyc_bus_delay_prediction')
+# setwd('D:/Msc/Winter 23-24/ML 2/Project/nyc_bus_delay_prediction/')
 
-root_rahat_dir <- "Desktop/ADR/ML-2/projects/nyc_bus_delay_prediction/"
+#root_rahat_dir <- "Desktop/ADR/ML-2/projects/nyc_bus_delay_prediction/"
+root_tania_dir <- "D:/Msc/Winter 23-24/ML 2/Project/nyc_bus_delay_prediction/documentation/plots/eda"
 
 # Load the dataset
 df <- read.csv("dataset/nyc_ds_eda.csv")
+
 
 
 ## Uni-variate Analysis
@@ -40,7 +42,6 @@ names(tab_dir_df) <- c("Direction", "Count")
 
 # Rename the levels in the Direction column
 levels(tab_dir_df$Direction) <- c("Outbound", "Inbound")
-
 tab_dir_df
 
 # Visualize the direction
@@ -49,6 +50,7 @@ ggplot(tab_dir_df, aes(x = Direction, y = Count, fill = Direction)) +
   geom_bar(stat = "identity") +
   scale_fill_manual(values = c("steelblue", "darkorange")) +
   labs(title = "Distribution of Directions", x = "Direction", y = "Count")
+
 
 # Note: The dataset has a balance distribution among 2 different direction
 
@@ -92,13 +94,11 @@ ggplot(top_line_df, aes(x = reorder(line_name, -count), y = count, fill = line_n
   theme(axis.text.x = element_text(angle = 45, hjust = 1),  # Rotate x labels for readability
         legend.position = "none")  # Remove the legend
 
-
 # calculate the percentage of top-20 frequent line name
 top_line_count_percentage <- sum(top_line_df$count) / sum(tab_line_df$count) * 100
 cat("Top 20 line's frequency percentage:", top_line_count_percentage, "%\n")
 
-
-# visualize the counts of each line with respect to thie index
+# visualize the counts of each line with respect to this index
 plot(tab_line_df$count,
      xlab = "Line Number", 
      ylab = "Count", 
