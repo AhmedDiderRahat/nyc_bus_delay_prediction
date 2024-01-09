@@ -35,4 +35,4 @@ In conclusion, our NYC Bus Delay Time Prediction project applied machine learnin
 
 
 ### Project Report: 
-The full report of this project is stored in this [link](https://github.com/AhmedDiderRahat/crypto_price_prediction/blob/main/documentation/report.pdf)
+The full report of this project is stored in this [link](https://github.com/AhmedDiderRahat/nyc_bus_delay_prediction/blob/main/documentation/ML2_Project_Documentation.pdf)
