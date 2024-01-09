@@ -18,7 +18,7 @@ library(glmnet)
 root_rahat_dir <- "Desktop/ADR/ML-2/projects/nyc_bus_delay_prediction/"
 
 # read data in csv file
-train_df <- read.csv(paste(root_rahat_dir, "dataset/nyc_ds_train.csv", sep=""))
+train_df <- read.csv(paste("", "dataset/nyc_ds_train.csv", sep=""))
 
 head(train_df)
 
@@ -94,7 +94,7 @@ trainY <- data.frame(non_neg_delay = train_df$non_neg_delay)
 
 
 # read data in csv file
-test_df <- read.csv(paste(root_rahat_dir, "dataset/nyc_ds_test.csv", sep=""))
+test_df <- read.csv(paste("", "dataset/nyc_ds_test.csv", sep=""))
 
 
 # Target Encoding (Mean Encoding) for test data:
@@ -186,7 +186,7 @@ testX[c("weekend_status",
                                        "day_of_year", 
                                        "time_of_day")]
 
-head(trainX)
+head(testX)
 
 
 # directly copy the predicted column
