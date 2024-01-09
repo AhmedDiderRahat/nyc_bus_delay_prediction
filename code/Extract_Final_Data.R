@@ -11,6 +11,9 @@ directory_path <- "dataset/original_data/"
 df <- list.files(directory_path, pattern = "\\.csv$", 
                  full.names = TRUE) %>% map_df(read.csv)
 
+
+cat("Total Number of rows in original dataset:", nrow(df), "\n")
+
 # sample set size
 N = 2000
 

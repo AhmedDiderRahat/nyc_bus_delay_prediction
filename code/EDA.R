@@ -18,7 +18,7 @@ library(lubridate)
 root_rahat_dir <- "Desktop/ADR/ML-2/projects/nyc_bus_delay_prediction/"
 
 # Load the dataset
-df <- read.csv(paste(root_rahat_dir, "dataset/nyc_ds_eda.csv", sep=""))
+df <- read.csv("dataset/nyc_ds_eda.csv")
 
 
 ## Uni-variate Analysis
@@ -351,7 +351,7 @@ cat("Average line counts:", avg_vehicle_count, "\n")
 # visualize top-20 vehicle name
 ggplot(top_vehicle_df, aes(x = reorder(vehicle_name, -count), y = count, fill = vehicle_name)) +
   geom_bar(stat = "identity") +
-  labs(title = "Top 20 Orign/Start Station Names by Count", x = "Origin Name", y = "Count") +
+  labs(title = "Top 20 Vehicle Name by Count", x = "Origin Name", y = "Count") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),  # Rotate x labels for readability
         legend.position = "none")  # Remove the legend
 
@@ -434,7 +434,7 @@ df_ws <- df_ws %>%
 ggplot(df_ws, aes(x = reorder(weekend_status, -percentage), y = total_count, fill = weekend_status)) +
   geom_bar(stat = "identity") +
   geom_text(aes(label = paste0(round(percentage, 2), "%")), vjust = -0.5, size = 4) +  # Add percentage labels
-  labs(title = "Top 20 Origin/Start Station Names by Count and Percentage",
+  labs(title = "Distribution of Weekend Status by Count and Percentage",
        x = "Origin Name",
        y = "Count") +
   theme(axis.text.x = element_text(angle = 0, hjust = 0.5),  # Reset X-axis text position to default
@@ -467,7 +467,6 @@ segments(0.8, quantiles[2], 1.2, quantiles[2], col = "blue")
 # Annotate quantiles
 text(1.25, quantiles[1], labels = round(quantiles[1], 2), col = "blue")
 text(1.25, quantiles[2], labels = round(quantiles[2], 2), col = "blue")
-
 
 
 #---------------------------------------------------------------------------------
@@ -560,7 +559,8 @@ text(1.24, quantiles[2], labels = round(quantiles[2], 2), col = "darkgreen")
 #---------------------------------------------------------------------------------
 
 ## Direction column vs delay time
-boxplot(non_neg_delay ~  direction, data = df, family='binomial')
+boxplot(non_neg_delay ~  direction, data = df, family='binomial',
+        main = "Boxplot of Delay Time by Direction")
 
 
 #---------------------------------------------------------------------------------
@@ -608,7 +608,7 @@ df_nnd_line_ba <- df_nnd_line %>%
   filter(count < average_count)
 
 cat("There are a total number of ", nrow(df_nnd_line_ba), 
-    " obersvation which has frequncy above to the avg. frequency", sep = "")
+    " obersvation which has frequncy below to the avg. frequency", sep = "")
 
 # Set the factor levels of line_name in the order of the dataframe
 df_nnd_line_ba$line_name <- factor(df_nnd_line_ba$line_name, levels = df_nnd_line_ba$line_name)
@@ -630,28 +630,32 @@ ggplot(df_nnd_line_ba, aes(x = line_name, y = mean_delay, fill = count)) +
 
 # Summary Statistics: 
 ## 1. Frequent bus lines have less variation in the average delay time (11.96 - 1.1).
-## 2. Where the less frequent bus that have less frequency than the average frequency 
+## 2. Where the less frequent bus (that have less frequency than the average frequency) 
 ####  have high variation in their average delay time (43.52 - 0).
 
 #---------------------------------------------------------------------------------
 
 ## Weekend column vs delay time
-boxplot(non_neg_delay ~  weekend_status, data = df, family='binomial')
+boxplot(non_neg_delay ~  weekend_status, data = df, family='binomial',
+        main = "Boxplot of Delay Time by Weekend Status")
 
 
 ## day of the year column vs delay time
-boxplot(non_neg_delay ~  day_of_year, data = df, family='binomial')
+boxplot(non_neg_delay ~  day_of_year, data = df, family='binomial',
+        main = "Boxplot of delay in different day of year")
 
 
 ## time of the day column vs delay time
 
 df$hour_of_day <- floor(df$time_of_day / 60)
 
-boxplot(non_neg_delay ~  hour_of_day, data = df, family='binomial')
+boxplot(non_neg_delay ~  hour_of_day, data = df, family='binomial',
+        main = "Boxplot of delay in different time of the day")
 
+df$hour_of_day <- NULL
+df$delay_mins <- NULL
 
-boxplot(non_neg_delay ~  arrivial_app, data = df, family='binomial')
-
+names(df)
 
 # Final Discussion to pick the features:
 ## 1. direction
@@ -675,8 +679,8 @@ df$vech_long <- NULL
 df$next_point_name <- NULL
 df$arrivial_app <- NULL
 df$dist_from_stop <- NULL
-df$delay_mins <- NULL
-df$hour_of_day <- NULL
+
+
 
 names(df)
 

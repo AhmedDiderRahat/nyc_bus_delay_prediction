@@ -17,7 +17,7 @@ library(lubridate)
 setwd('../ahmed/Desktop/ADR/ML-2/')
 
 # Load the dataset
-df <- read.csv("projects/nyc_bus_delay_prediction/dataset/nyc_traffic_sample.csv")
+df <- read.csv("dataset/nyc_traffic_sample.csv")
 
 head(df)
 
@@ -107,7 +107,7 @@ clean_df$expected_arr_time_tt
 
 clean_df$schedule_arr_time_tt <- as.POSIXct(clean_df$schedule_arr_time, format="%Y-%m-%d %H:%M:%S")
 
-clean_df$schedule_arr_time_tt
+clean_df$schedule_arr_time_tt[1:400]
 # while converting the schedule arrival time, we found a lots of Nan, so we further investigate the issue
 
 schedule_time <- clean_df$schedule_arr_time
